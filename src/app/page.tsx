@@ -1,53 +1,182 @@
 'use client';
 
-import { CurrentWeatherCard } from '@/components/weather/CurrentWeatherCard'
-import { WeatherDetails } from '@/components/weather/WeatherDetails'
-import { ForecastCard } from '@/components/weather/ForecastCard'
-import { SearchLocation } from '@/components/weather/SearchLocation'
+import { useEffect, useState } from 'react';
+import { CurrentWeatherCard } from '@/components/weather/CurrentWeatherCard';
+import { WeatherDetails } from '@/components/weather/WeatherDetails';
+import { ForecastCard } from '@/components/weather/ForecastCard';
+import { SearchLocation } from '@/components/weather/SearchLocation';
+import { useWeather } from '@/hooks/useWeather';
+import { LocationSearchResult } from '@/lib/types/weather';
 
 export default function Home() {
+  const [selectedLocation, setSelectedLocation] = useState('London');
   
-  // Event handlers
-  const handleLocationSelect = (location: any) => {
+  const {
+    current,
+    forecast,
+    loading,
+    error,
+    fetchWeather,
+    fetchWeatherByCoords,
+    refreshWeather,
+    isLoading
+  } = useWeather({
+    location: selectedLocation,
+    autoFetch: true,
+    refreshInterval: 5 // Refresh every 5 minutes
+  });
+
+  // Handle location selection from search
+  const handleLocationSelect = (location: LocationSearchResult) => {
     console.log('✅ Selected location:', location);
+    const locationString = `${location.name}, ${location.country}`;
+    setSelectedLocation(locationString);
+    fetchWeather(locationString);
+  };
+
+  // Handle geolocation selection
+  const handleLocationByCoords = (lat: number, lon: number) => {
+    console.log('📍 Using coordinates:', { lat, lon });
+    setSelectedLocation(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
+    fetchWeatherByCoords(lat, lon);
   };
 
   const handleSearch = (query: string) => {
     console.log('🔍 Searching for:', query);
   };
 
+  // Handle manual refresh
+  const handleRefresh = () => {
+    console.log('🔄 Refreshing weather data...');
+    refreshWeather();
+  };
+
+  if (error) {
+    return (
+      <main className="min-h-screen p-4 lg:p-8 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-400 text-6xl mb-4">⚠️</div>
+          <h1 className="text-2xl font-bold text-white mb-2">Weather Data Error</h1>
+          <p className="text-white/60 mb-4 max-w-md">{error}</p>
+          <button 
+            onClick={handleRefresh}
+            className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 text-white">
-          Weather App - Phase 3 Complete! ✨
-        </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            Live Weather Dashboard ✨
+          </h1>
+          <p className="text-white/60">
+            Real-time weather data • Enhanced location search • GPS support
+          </p>
+          <div className="mt-2 text-white/40 text-sm">
+            User: Aashik9567 | UTC: {new Date().toISOString().replace('T', ' ').slice(0, 19)}
+          </div>
+          {loading && (
+            <div className="mt-2 text-white/50 text-sm flex items-center justify-center gap-2">
+              <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></div>
+              Loading weather data...
+            </div>
+          )}
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Current Weather - Spans 2 columns on large screens */}
           <div className="lg:col-span-2">
-            <CurrentWeatherCard />
+            {current ? (
+              <CurrentWeatherCard 
+                {...current}
+                onRefresh={handleRefresh}
+                isLoading={isLoading}
+              />
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-8 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-8 h-8 border-2 border-white/20 border-t-white/60 rounded-full animate-spin mx-auto mb-4"></div>
+                  <p className="text-white/60">Loading current weather...</p>
+                </div>
+              </div>
+            )}
           </div>
           
-          {/* Search Location */}
+          {/* Enhanced Search Location */}
           <div>
             <SearchLocation 
               onLocationSelect={handleLocationSelect}
+              onLocationByCoords={handleLocationByCoords}
               onSearch={handleSearch}
+              currentLocation={current ? `${current.location}, ${current.country}` : selectedLocation}
             />
           </div>
           
           {/* Weather Details */}
           <div>
-            <WeatherDetails />
+            {current ? (
+              <WeatherDetails 
+                humidity={current.humidity}
+                windSpeed={current.windSpeed}
+                windDirection={current.windDirection}
+                pressure={current.pressure}
+                visibility={current.visibility}
+                uvIndex={current.uvIndex}
+                dewPoint={current.dewPoint}
+                precipitation={current.precipitation}
+              />
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin mx-auto mb-2"></div>
+                  <p className="text-white/60 text-sm">Loading details...</p>
+                </div>
+              </div>
+            )}
           </div>
           
           {/* 7-Day Forecast - Spans 2 columns on large screens */}
           <div className="lg:col-span-2">
-            <ForecastCard title="7-Day Forecast" />
-            </div>
+            {forecast ? (
+              <ForecastCard 
+                forecast={forecast.map(day => ({
+                  date: day.date,
+                  condition: day.condition,
+                  maxTemp: day.maxTemp,
+                  minTemp: day.minTemp,
+                  humidity: day.humidity,
+                  windSpeed: day.windSpeed,
+                  precipitation: day.chanceOfRain
+                }))}
+              />
+            ) : (
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-6 h-6 border-2 border-white/20 border-t-white/60 rounded-full animate-spin mx-auto mb-2"></div>
+                  <p className="text-white/60 text-sm">Loading forecast...</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
+
+        {/* Debug Info (Development Only) */}
+        {process.env.NODE_ENV === 'development' && (
+          <div className="mt-8 p-4 bg-black/20 rounded-lg text-xs text-white/40 font-mono">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div>Debug: Location="{selectedLocation}" | Loading={loading.toString()}</div>
+              <div>HasCurrent={!!current} | HasForecast={!!forecast} | Error={error || 'none'}</div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
-  )
+  );
 }

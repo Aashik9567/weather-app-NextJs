@@ -4,170 +4,156 @@ import { cn } from '@/lib/utils/cn';
 
 interface WeatherIconProps {
   condition: string;
+  conditionCode?: number;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
   animated?: boolean;
+  className?: string;
+  isDay?: boolean;
 }
-
-const weatherIcons = {
-  'clear-day': {
-    icon: '☀️',
-    gradient: 'from-yellow-400 to-orange-500',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <circle cx="12" cy="12" r="5" fill="url(#sunGradient)" />
-        <g stroke="url(#sunGradient)" strokeWidth="2" strokeLinecap="round">
-          <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
-        </g>
-        <defs>
-          <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FCD34D" />
-            <stop offset="100%" stopColor="#F59E0B" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  'clear-night': {
-    icon: '🌙',
-    gradient: 'from-indigo-400 to-purple-500',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="url(#moonGradient)" />
-        <defs>
-          <linearGradient id="moonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#818CF8" />
-            <stop offset="100%" stopColor="#A855F7" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  'partly-cloudy-day': {
-    icon: '⛅',
-    gradient: 'from-blue-400 to-yellow-400',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <circle cx="12" cy="8" r="3" fill="url(#partlyCloudyGradient)" />
-        <path d="M6 16h12a4 4 0 0 0 0-8 6 6 0 0 0-12 0 4 4 0 0 0 0 8z" fill="url(#cloudGradient)" opacity="0.8" />
-        <defs>
-          <linearGradient id="partlyCloudyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#FCD34D" />
-            <stop offset="100%" stopColor="#F59E0B" />
-          </linearGradient>
-          <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#E5E7EB" />
-            <stop offset="100%" stopColor="#9CA3AF" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  'cloudy': {
-    icon: '☁️',
-    gradient: 'from-gray-400 to-gray-600',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M6 16h12a4 4 0 0 0 0-8 6 6 0 0 0-12 0 4 4 0 0 0 0 8z" fill="url(#cloudyGradient)" />
-        <path d="M4 20h16a2 2 0 0 0 0-4 4 4 0 0 0-8 0 2 2 0 0 0 0 4z" fill="url(#cloudyGradient)" opacity="0.7" />
-        <defs>
-          <linearGradient id="cloudyGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#E5E7EB" />
-            <stop offset="100%" stopColor="#6B7280" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  'rain': {
-    icon: '🌧️',
-    gradient: 'from-blue-400 to-blue-600',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M6 16h12a4 4 0 0 0 0-8 6 6 0 0 0-12 0 4 4 0 0 0 0 8z" fill="url(#rainCloudGradient)" />
-        <g stroke="url(#rainDropGradient)" strokeWidth="2" strokeLinecap="round">
-          <path d="M8 19v2m4-4v2m4-2v2" />
-        </g>
-        <defs>
-          <linearGradient id="rainCloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#9CA3AF" />
-            <stop offset="100%" stopColor="#4B5563" />
-          </linearGradient>
-          <linearGradient id="rainDropGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#60A5FA" />
-            <stop offset="100%" stopColor="#2563EB" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  },
-  'heavy-rain': {
-    icon: '🌧️',
-    gradient: 'from-blue-500 to-blue-700',
-    svg: (
-      <svg viewBox="0 0 24 24" fill="none" className="w-full h-full">
-        <path d="M6 16h12a4 4 0 0 0 0-8 6 6 0 0 0-12 0 4 4 0 0 0 0 8z" fill="url(#heavyRainCloudGradient)" />
-        <g stroke="url(#heavyRainDropGradient)" strokeWidth="2" strokeLinecap="round">
-          <path d="M7 19v3m3-5v3m4-3v3m3-5v3" />
-        </g>
-        <defs>
-          <linearGradient id="heavyRainCloudGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#6B7280" />
-            <stop offset="100%" stopColor="#374151" />
-          </linearGradient>
-          <linearGradient id="heavyRainDropGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#3B82F6" />
-            <stop offset="100%" stopColor="#1D4ED8" />
-          </linearGradient>
-        </defs>
-      </svg>
-    )
-  }
-};
-
-const sizeClasses = {
-  sm: 'w-6 h-6',
-  md: 'w-8 h-8',
-  lg: 'w-16 h-16',
-  xl: 'w-20 h-20'
-};
 
 export function WeatherIcon({ 
   condition, 
+  conditionCode,
   size = 'md', 
-  className, 
-  animated = false 
+  animated = false, 
+  className,
+  isDay = true 
 }: WeatherIconProps) {
-  const weatherData = weatherIcons[condition as keyof typeof weatherIcons] || weatherIcons['clear-day'];
   
-  return (
-    <div 
-      className={cn(
-        sizeClasses[size],
-        'relative flex items-center justify-center',
-        animated && 'animate-pulse',
-        className
-      )}
-    >
-      {/* SVG Icon */}
-      <div className="w-full h-full">
-        {weatherData.svg}
-      </div>
+  // Map WeatherAPI condition codes to our display
+  const getWeatherDisplay = (code?: number, conditionText?: string, isDayTime?: boolean) => {
+    // If we have condition code, use it for precise mapping
+    if (code) {
+      const conditionMap: { [key: number]: { icon: string; color: string; bgColor: string } } = {
+        // Clear/Sunny
+        1000: { 
+          icon: isDayTime ? '☀️' : '🌙', 
+          color: isDayTime ? 'text-yellow-400' : 'text-blue-300',
+          bgColor: isDayTime ? 'bg-yellow-400/20' : 'bg-blue-400/20'
+        },
+        // Partly Cloudy
+        1003: { 
+          icon: isDayTime ? '⛅' : '☁️', 
+          color: 'text-gray-300',
+          bgColor: 'bg-gray-400/20'
+        },
+        // Cloudy/Overcast
+        1006: { icon: '☁️', color: 'text-gray-400', bgColor: 'bg-gray-500/20' },
+        1009: { icon: '☁️', color: 'text-gray-500', bgColor: 'bg-gray-600/20' },
+        // Fog/Mist
+        1030: { icon: '🌫️', color: 'text-gray-400', bgColor: 'bg-gray-400/20' },
+        1135: { icon: '🌫️', color: 'text-gray-400', bgColor: 'bg-gray-400/20' },
+        1147: { icon: '🌫️', color: 'text-gray-400', bgColor: 'bg-gray-400/20' },
+        // Drizzle
+        1063: { icon: '🌦️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        1150: { icon: '🌦️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        1153: { icon: '🌦️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        1168: { icon: '🌦️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        1171: { icon: '🌦️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        // Light Rain
+        1180: { icon: '🌧️', color: 'text-blue-500', bgColor: 'bg-blue-500/20' },
+        1183: { icon: '🌧️', color: 'text-blue-500', bgColor: 'bg-blue-500/20' },
+        1240: { icon: '🌧️', color: 'text-blue-500', bgColor: 'bg-blue-500/20' },
+        // Moderate Rain
+        1186: { icon: '🌧️', color: 'text-blue-600', bgColor: 'bg-blue-600/20' },
+        1189: { icon: '🌧️', color: 'text-blue-600', bgColor: 'bg-blue-600/20' },
+        1243: { icon: '🌧️', color: 'text-blue-600', bgColor: 'bg-blue-600/20' },
+        // Heavy Rain
+        1192: { icon: '🌧️', color: 'text-blue-700', bgColor: 'bg-blue-700/20' },
+        1195: { icon: '🌧️', color: 'text-blue-700', bgColor: 'bg-blue-700/20' },
+        1246: { icon: '🌧️', color: 'text-blue-800', bgColor: 'bg-blue-800/20' },
+        // Snow
+        1066: { icon: '❄️', color: 'text-blue-200', bgColor: 'bg-blue-200/20' },
+        1210: { icon: '❄️', color: 'text-blue-200', bgColor: 'bg-blue-200/20' },
+        1213: { icon: '❄️', color: 'text-blue-200', bgColor: 'bg-blue-200/20' },
+        1216: { icon: '🌨️', color: 'text-blue-300', bgColor: 'bg-blue-300/20' },
+        1219: { icon: '🌨️', color: 'text-blue-300', bgColor: 'bg-blue-300/20' },
+        1222: { icon: '🌨️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        1225: { icon: '🌨️', color: 'text-blue-500', bgColor: 'bg-blue-500/20' },
+        1255: { icon: '🌨️', color: 'text-blue-300', bgColor: 'bg-blue-300/20' },
+        1258: { icon: '🌨️', color: 'text-blue-400', bgColor: 'bg-blue-400/20' },
+        // Thunderstorm
+        1087: { icon: '⛈️', color: 'text-purple-400', bgColor: 'bg-purple-400/20' },
+        1273: { icon: '⛈️', color: 'text-purple-500', bgColor: 'bg-purple-500/20' },
+        1276: { icon: '⛈️', color: 'text-purple-600', bgColor: 'bg-purple-600/20' },
+        1279: { icon: '⛈️', color: 'text-purple-500', bgColor: 'bg-purple-500/20' },
+        1282: { icon: '⛈️', color: 'text-purple-600', bgColor: 'bg-purple-600/20' },
+      };
       
-      {/* Animated effects for specific conditions */}
-      {animated && (condition === 'rain' || condition === 'heavy-rain') && (
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute w-0.5 h-2 bg-blue-400 rounded-full animate-bounce"
-              style={{
-                left: `${30 + i * 20}%`,
-                animationDelay: `${i * 0.2}s`,
-                animationDuration: '1s'
-              }}
-            />
-          ))}
+      const mapping = conditionMap[code];
+      if (mapping) return mapping;
+    }
+    
+    // Fallback to text-based matching
+    const text = conditionText?.toLowerCase() || condition.toLowerCase();
+    
+    if (text.includes('sunny') || text.includes('clear')) {
+      return { 
+        icon: isDayTime ? '☀️' : '🌙', 
+        color: isDayTime ? 'text-yellow-400' : 'text-blue-300',
+        bgColor: isDayTime ? 'bg-yellow-400/20' : 'bg-blue-400/20'
+      };
+    }
+    if (text.includes('partly cloudy') || text.includes('partly')) {
+      return { icon: '⛅', color: 'text-gray-300', bgColor: 'bg-gray-400/20' };
+    }
+    if (text.includes('cloudy') || text.includes('overcast')) {
+      return { icon: '☁️', color: 'text-gray-400', bgColor: 'bg-gray-500/20' };
+    }
+    if (text.includes('rain') || text.includes('drizzle')) {
+      return { icon: '🌧️', color: 'text-blue-500', bgColor: 'bg-blue-500/20' };
+    }
+    if (text.includes('snow') || text.includes('blizzard')) {
+      return { icon: '❄️', color: 'text-blue-200', bgColor: 'bg-blue-200/20' };
+    }
+    if (text.includes('thunder') || text.includes('storm')) {
+      return { icon: '⛈️', color: 'text-purple-500', bgColor: 'bg-purple-500/20' };
+    }
+    if (text.includes('fog') || text.includes('mist')) {
+      return { icon: '🌫️', color: 'text-gray-400', bgColor: 'bg-gray-400/20' };
+    }
+    
+    // Default fallback
+    return { 
+      icon: isDayTime ? '☀️' : '🌙', 
+      color: 'text-gray-400', 
+      bgColor: 'bg-gray-400/20' 
+    };
+  };
+
+  const weather = getWeatherDisplay(conditionCode, condition, isDay);
+  
+  const sizeClasses = {
+    sm: 'text-lg w-6 h-6',
+    md: 'text-2xl w-8 h-8',
+    lg: 'text-4xl w-12 h-12',
+    xl: 'text-6xl w-16 h-16'
+  };
+
+  return (
+    <div className={cn(
+      'relative flex items-center justify-center rounded-xl transition-all duration-300',
+      sizeClasses[size],
+      weather.bgColor,
+      animated && 'hover:scale-110 hover:rotate-6',
+      className
+    )}>
+      <span 
+        className={cn(
+          'font-bold transition-colors duration-300',
+          weather.color
+        )}
+        title={`${condition}${conditionCode ? ` (Code: ${conditionCode})` : ''}`}
+      >
+        {weather.icon}
+      </span>
+      
+      {/* Animated rain drops for rain conditions */}
+      {animated && (condition.toLowerCase().includes('rain') || conditionCode && [1180, 1183, 1186, 1189, 1192, 1195, 1240, 1243, 1246].includes(conditionCode)) && (
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1 left-1 w-1 h-1 bg-blue-400 rounded-full opacity-60 animate-bounce" style={{ animationDelay: '0s' }} />
+          <div className="absolute top-2 right-2 w-1 h-1 bg-blue-500 rounded-full opacity-80 animate-bounce" style={{ animationDelay: '0.5s' }} />
+          <div className="absolute bottom-2 left-2 w-1 h-1 bg-blue-300 rounded-full opacity-70 animate-bounce" style={{ animationDelay: '1s' }} />
         </div>
       )}
     </div>
