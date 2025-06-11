@@ -7,8 +7,9 @@ import { ForecastCard } from '@/components/weather/ForecastCard';
 import { SearchLocation } from '@/components/weather/SearchLocation';
 import { useWeather } from '@/hooks/useWeather';
 import { LocationSearchResult } from '@/lib/types/weather';
+import { Home, BarChart3 } from 'lucide-react';
 
-export default function Home() {
+export default function Dashboard() {
   const [selectedLocation, setSelectedLocation] = useState('London');
   
   const {
@@ -23,10 +24,9 @@ export default function Home() {
   } = useWeather({
     location: selectedLocation,
     autoFetch: true,
-    refreshInterval: 5 // Refresh every 5 minutes
+    refreshInterval: 5
   });
 
-  // Handle location selection from search
   const handleLocationSelect = (location: LocationSearchResult) => {
     console.log('✅ Selected location:', location);
     const locationString = `${location.name}, ${location.country}`;
@@ -34,7 +34,6 @@ export default function Home() {
     fetchWeather(locationString);
   };
 
-  // Handle geolocation selection
   const handleLocationByCoords = (lat: number, lon: number) => {
     console.log('📍 Using coordinates:', { lat, lon });
     setSelectedLocation(`${lat.toFixed(4)}, ${lon.toFixed(4)}`);
@@ -45,7 +44,6 @@ export default function Home() {
     console.log('🔍 Searching for:', query);
   };
 
-  // Handle manual refresh
   const handleRefresh = () => {
     console.log('🔄 Refreshing weather data...');
     refreshWeather();
@@ -53,7 +51,7 @@ export default function Home() {
 
   if (error) {
     return (
-      <main className="min-h-screen p-4 lg:p-8 flex items-center justify-center">
+      <div className="p-4 lg:p-8 flex items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="text-red-400 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-bold text-white mb-2">Weather Data Error</h1>
@@ -65,33 +63,40 @@ export default function Home() {
             Try Again
           </button>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="min-h-screen p-4 lg:p-8">
+    <div className="p-4 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Live Weather Dashboard ✨
-          </h1>
-          <p className="text-white/60">
-            Real-time weather data • Enhanced location search • GPS support
-          </p>
-          <div className="mt-2 text-white/40 text-sm">
-            User: Aashik9567 | UTC: {new Date().toISOString().replace('T', ' ').slice(0, 19)}
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <Home className="h-8 w-8 text-white" />
+            <h1 className="text-4xl font-bold text-white">
+              Weather Dashboard
+            </h1>
+          </div>
+          <div className="flex items-center justify-between">
+            <p className="text-white/60">
+              Real-time weather data • Enhanced search • GPS support
+            </p>
+            <div className="text-white/40 text-sm">
+              User: Aashik9567 | UTC: {new Date().toISOString().replace('T', ' ').slice(0, 19)}
+            </div>
           </div>
           {loading && (
-            <div className="mt-2 text-white/50 text-sm flex items-center justify-center gap-2">
+            <div className="mt-2 text-white/50 text-sm flex items-center gap-2">
               <div className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin"></div>
               Loading weather data...
             </div>
           )}
         </div>
         
+        {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Current Weather - Spans 2 columns on large screens */}
+          {/* Current Weather */}
           <div className="lg:col-span-2">
             {current ? (
               <CurrentWeatherCard 
@@ -109,7 +114,7 @@ export default function Home() {
             )}
           </div>
           
-          {/* Enhanced Search Location */}
+          {/* Search Location */}
           <div>
             <SearchLocation 
               onLocationSelect={handleLocationSelect}
@@ -142,7 +147,7 @@ export default function Home() {
             )}
           </div>
           
-          {/* 7-Day Forecast - Spans 2 columns on large screens */}
+          {/* 7-Day Forecast */}
           <div className="lg:col-span-2">
             {forecast ? (
               <ForecastCard 
@@ -166,17 +171,7 @@ export default function Home() {
             )}
           </div>
         </div>
-
-        {/* Debug Info (Development Only) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="mt-8 p-4 bg-black/20 rounded-lg text-xs text-white/40 font-mono">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              <div>Debug: Location="{selectedLocation}" | Loading={loading.toString()}</div>
-              <div>HasCurrent={!!current} | HasForecast={!!forecast} | Error={error || 'none'}</div>
-            </div>
-          </div>
-        )}
       </div>
-    </main>
+    </div>
   );
 }

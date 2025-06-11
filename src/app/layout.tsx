@@ -1,92 +1,59 @@
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
-import './globals.css'
+import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { Sidebar } from '@/components/layout/Sidebar';
 
-// Optimize font loading
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-})
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Weather App - Beautiful Weather Dashboard',
-  description: 'A modern, glass-morphism weather application built with Next.js and Tailwind CSS. Get real-time weather updates with a stunning user interface.',
-  keywords: 'weather, forecast, dashboard, glass morphism, modern UI, Next.js',
-  authors: [{ name: 'Aashik9567' }],
-  creator: 'Aashik9567',
-  applicationName: 'Weather App',
-  
-  // Twitter Card metadata
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Weather App - Beautiful Weather Dashboard',
-    description: 'A modern weather app with glass morphism design',
-    creator: '@Aashik9567',
-    images: ['https://media.licdn.com/dms/image/v2/D4E03AQF40PBb21Mq-Q/profile-displayphoto-shrink_400_400/B4EZcl1bTrH0Ag-/0/1748686452967?e=1755129600&v=beta&t=dQRiYgCKfxZVmDbrt-OJjBFUI_8v4OfAIdT0AdkzUm8'],
-  },
-  
-  // Icons only
-  icons: {
-    icon: '/favicon.ico',
-  },
-  
-  // Robots
-  robots: {
-    index: true,
-    follow: true,
-  },
-}
+  title: 'WeatherApp - Live Weather Dashboard | Aashik9567',
+  description: 'Real-time weather data with AI insights by Aashik9567',
+  keywords: ['weather', 'forecast', 'AI', 'dashboard', 'real-time', 'Aashik9567'],
+  authors: [{ name: 'Aashik9567', url: 'https://github.com/Aashik9567' }],
+};
 
-// SEPARATE viewport export (Next.js 14+ requirement)
-export const viewport = {
+// Separate viewport export to fix the warning
+export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  themeColor: '#2B5CE6',
+};
+
+interface RootLayoutProps {
+  children: React.ReactNode;
+  modal: React.ReactNode;
 }
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+  modal,
+}: RootLayoutProps) {
   return (
-    <html lang="en">
-      <head>
-        {/* Essential preconnects only */}
-        <link rel="preconnect" href="https://api.weatherapi.com" />
-      </head>
-      
+    <html lang="en" className="dark">
       <body className={inter.className}>
-        {/* Main application wrapper */}
-        <div id="app-root" className="relative min-h-screen overflow-x-hidden">
+        <div className="min-h-screen sky-gradient-bg">
+          <div className="fixed inset-0 bg-gradient-to-br from-sky-400/10 via-sky-500/10 to-sky-600/10" />
+          <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.05),transparent_50%)]" />
+          <div className="fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(56,189,248,0.08),transparent_50%)]" />
+          <div className="fixed inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(2,132,199,0.08),transparent_50%)]" />
           
-          {/* Background decorations (floating clouds) */}
-          <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-            <div className="absolute top-10 left-10 w-20 h-12 bg-white/5 rounded-full blur-xl animate-float" 
-                 style={{ animationDelay: '0s' }} />
-            <div className="absolute top-32 right-20 w-16 h-10 bg-white/5 rounded-full blur-xl animate-float" 
-                 style={{ animationDelay: '2s' }} />
-            <div className="absolute top-64 left-1/3 w-24 h-14 bg-white/5 rounded-full blur-xl animate-float" 
-                 style={{ animationDelay: '4s' }} />
-            <div className="absolute bottom-32 right-10 w-18 h-11 bg-white/5 rounded-full blur-xl animate-float" 
-                 style={{ animationDelay: '1s' }} />
+          <div className="fixed inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-sky-300/20 rounded-full animate-float" style={{ animationDelay: '0s' }} />
+            <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-sky-400/30 rounded-full animate-float" style={{ animationDelay: '2s' }} />
+            <div className="absolute top-1/2 left-3/4 w-1.5 h-1.5 bg-sky-200/20 rounded-full animate-float" style={{ animationDelay: '4s' }} />
           </div>
           
-          {/* Main content area */}
-          <main className="relative z-10">
-            {children}
-          </main>
-          
+          <div className="relative z-10 flex h-screen">
+            <Sidebar />
+            <main className="flex-1 overflow-auto lg:ml-0">
+              <div className="h-full pt-16 lg:pt-0">
+                {children}
+              </div>
+            </main>
+          </div>
+
+          {modal}
         </div>
-        
-        {/* Development indicator (only in development) */}
-        {process.env.NODE_ENV === 'development' && (
-          <div className="fixed bottom-4 left-4 z-50 bg-green-500/20 backdrop-blur-sm border border-green-500/30 rounded-lg px-3 py-1 text-xs text-green-300">
-            Development Mode
-          </div>
-        )}
       </body>
     </html>
-  )
+  );
 }

@@ -2,11 +2,85 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+/* Sky Blue Theme Variables */
+:root {
+  --sky-blue-50: #f0f9ff;
+  --sky-blue-100: #e0f2fe;
+  --sky-blue-200: #bae6fd;
+  --sky-blue-300: #7dd3fc;
+  --sky-blue-400: #38bdf8;
+  --sky-blue-500: #0ea5e9;
+  --sky-blue-600: #0284c7;
+  --sky-blue-700: #0369a1;
+  --sky-blue-800: #075985;
+  --sky-blue-900: #0c4a6e;
+  --sky-blue-950: #082f49;
+}
+
+html {
+  height: 100%;
+}
+
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: linear-gradient(135deg, #2B5CE6 0%, #1E40AF 100%);
-  min-height: 100vh;
-  color: white;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Sky Blue Gradient Background */
+.sky-gradient-bg {
+  background: linear-gradient(135deg, 
+    #0ea5e9 0%,     /* sky-500 */
+    #0284c7 25%,    /* sky-600 */
+    #0369a1 50%,    /* sky-700 */
+    #075985 75%,    /* sky-800 */
+    #0c4a6e 100%    /* sky-900 */
+  );
+}
+
+/* Glass morphism effects with sky blue tint */
+.glass-effect {
+  background: rgba(14, 165, 233, 0.1);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-effect-strong {
+  background: rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Custom scrollbar for sky theme */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(14, 165, 233, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(14, 165, 233, 0.5);
+}
+
+/* Sky blue glow effects */
+.sky-glow {
+  box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
+}
+
+.sky-glow-strong {
+  box-shadow: 0 0 30px rgba(14, 165, 233, 0.5);
 }
 
 /* Glass effect utilities */
