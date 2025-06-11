@@ -14,24 +14,7 @@ export const metadata: Metadata = {
   keywords: 'weather, forecast, dashboard, glass morphism, modern UI, Next.js',
   authors: [{ name: 'Aashik9567' }],
   creator: 'Aashik9567',
-  
-  // Open Graph metadata for social sharing
-  openGraph: {
-    title: 'Weather App - Beautiful Weather Dashboard',
-    description: 'A modern weather app with glass morphism design',
-    url: 'https://your-domain.com',
-    siteName: 'Weather App',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'Weather App Preview',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
-  },
+  applicationName: 'Weather App',
   
   // Twitter Card metadata
   twitter: {
@@ -39,7 +22,7 @@ export const metadata: Metadata = {
     title: 'Weather App - Beautiful Weather Dashboard',
     description: 'A modern weather app with glass morphism design',
     creator: '@Aashik9567',
-    images: ['/og-image.png'],
+    images: ['https://media.licdn.com/dms/image/v2/D4E03AQF40PBb21Mq-Q/profile-displayphoto-shrink_400_400/B4EZcl1bTrH0Ag-/0/1748686452967?e=1755129600&v=beta&t=dQRiYgCKfxZVmDbrt-OJjBFUI_8v4OfAIdT0AdkzUm8'],
   },
   
   // Icons only
