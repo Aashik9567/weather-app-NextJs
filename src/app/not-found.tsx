@@ -26,16 +26,24 @@ import {
 export default function NotFound() {
   const router = useRouter();
   const [countdown, setCountdown] = useState(10);
-  const [currentTime, setCurrentTime] = useState<string>('2025-06-12 07:49:08');
+  const [currentTime, setCurrentTime] = useState<string>('2025-06-12 07:54:15');
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const currentUser = 'Aashik9567';
 
-  // Update time every second
+  // Prevent hydration mismatch
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Update time every second after mount
+  useEffect(() => {
+    if (!mounted) return;
+
     const updateTime = () => {
-      const baseTime = new Date('2025-06-12T07:49:08.000Z');
-      const startTime = new Date('2025-06-12T07:49:08.000Z').getTime();
+      const baseTime = new Date('2025-06-12T07:54:15.000Z');
+      const startTime = new Date('2025-06-12T07:54:15.000Z').getTime();
       const elapsed = Date.now() - startTime;
       const currentActualTime = new Date(baseTime.getTime() + elapsed);
       setCurrentTime(currentActualTime.toISOString().replace('T', ' ').slice(0, 19));
@@ -44,10 +52,12 @@ export default function NotFound() {
     updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [mounted]);
 
   // Countdown timer
   useEffect(() => {
+    if (!mounted) return;
+
     if (countdown > 0) {
       const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
       return () => clearTimeout(timer);
@@ -55,7 +65,7 @@ export default function NotFound() {
       setIsRedirecting(true);
       router.push('/');
     }
-  }, [countdown, router]);
+  }, [countdown, router, mounted]);
 
   const quickLinks = [
     { name: 'Dashboard', href: '/', icon: Home, description: 'Weather overview & current conditions' },
@@ -77,6 +87,10 @@ export default function NotFound() {
   const handleSearch = () => {
     router.push('/search');
   };
+
+  // Don't render countdown until mounted
+  const displayCountdown = mounted ? countdown : 10;
+  const displayTime = mounted ? currentTime : '2025-06-12 07:54:15';
 
   if (isRedirecting) {
     return (
@@ -122,7 +136,7 @@ export default function NotFound() {
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="h-4 w-4" />
-                UTC: {currentTime}
+                UTC: {displayTime}
               </span>
               <span className="flex items-center gap-1">
                 <Globe className="h-4 w-4" />
@@ -186,7 +200,7 @@ export default function NotFound() {
                 <RefreshCw className="h-5 w-5 animate-spin" />
                 <span>Automatically redirecting to Dashboard in</span>
                 <span className="text-2xl font-bold text-white bg-sky-500/20 px-3 py-1 rounded-lg">
-                  {countdown}
+                  {displayCountdown}
                 </span>
                 <span>seconds</span>
               </div>
@@ -308,7 +322,7 @@ export default function NotFound() {
               <span>•</span>
               <span>Developed by {currentUser}</span>
               <span>•</span>
-              <span>{currentTime} UTC</span>
+              <span>{displayTime} UTC</span>
               <span>•</span>
               <span className="flex items-center gap-1">
                 <Zap className="h-3 w-3" />

@@ -41,7 +41,6 @@ interface NavigationItem {
 }
 
 const navigation: NavigationItem[] = [
-  // Main Navigation
   { 
     name: 'Dashboard', 
     href: '/', 
@@ -64,8 +63,6 @@ const navigation: NavigationItem[] = [
     description: 'Saved places & favorites',
     category: 'main' 
   },
-
-  // Features
   { 
     name: 'AI Insights', 
     href: '/ai-insights', 
@@ -81,7 +78,13 @@ const navigation: NavigationItem[] = [
     description: 'Weather trends & patterns',
     category: 'features' 
   },
-  // Account
+  { 
+    name: 'Search', 
+    href: '/search', 
+    icon: Search, 
+    description: 'Advanced location search',
+    category: 'features' 
+  },
   { 
     name: 'Settings', 
     href: '/settings', 
@@ -100,12 +103,12 @@ export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [currentTime, setCurrentTime] = useState<Date | null>(null); // Start with null to prevent hydration mismatch
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+  const [displayTime, setDisplayTime] = useState('2025-06-12 07:54:15'); // Fallback time
   const [weatherTheme, setWeatherTheme] = useState<'day' | 'night'>('day');
   const [isMobile, setIsMobile] = useState(false);
-  const [isClient, setIsClient] = useState(false); // Track if we're on client
+  const [isClient, setIsClient] = useState(false);
 
-  // Set isClient to true after mount to prevent hydration issues
   useEffect(() => {
     setIsClient(true);
   }, []);
@@ -123,58 +126,61 @@ export function Sidebar({ className }: SidebarProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Update time with your current timestamp: 2025-06-11 09:33:31
+  // Updated with your current timestamp: 2025-06-12 07:54:15
   useEffect(() => {
-    if (!isClient) return; // Only run on client to prevent hydration mismatch
+    if (!isClient) return;
 
     const updateTime = () => {
-      // Base time from your provided timestamp
-      const baseTime = new Date('2025-06-11T09:33:31.000Z');
-      const startTime = new Date('2025-06-11T09:33:31.000Z').getTime();
+      const baseTime = new Date('2025-06-12T07:54:15.000Z');
+      const startTime = new Date('2025-06-12T07:54:15.000Z').getTime();
       const elapsed = Date.now() - startTime;
       const currentActualTime = new Date(baseTime.getTime() + elapsed);
       
       setCurrentTime(currentActualTime);
+      setDisplayTime(currentActualTime.toISOString().replace('T', ' ').slice(0, 19));
       
       const hour = currentActualTime.getUTCHours();
       setWeatherTheme(hour >= 6 && hour < 18 ? 'day' : 'night');
     };
 
-    updateTime(); // Initial call
+    updateTime();
     const timer = setInterval(updateTime, 1000);
     return () => clearInterval(timer);
   }, [isClient]);
 
-  // Close mobile sidebar when route changes
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
 
-  const formatTime = (date: Date) => {
-    return {
-      time: date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false,
-        timeZone: 'UTC'
-      }),
-      date: date.toLocaleDateString('en-US', { 
-        weekday: 'short',
-        month: 'short', 
-        day: 'numeric',
-        timeZone: 'UTC'
-      }),
-      fullDate: date.toISOString().replace('T', ' ').slice(0, 19)
-    };
+  const formatTime = (timeString: string) => {
+    try {
+      const date = new Date(timeString + 'Z'); // Add Z for UTC
+      return {
+        time: date.toLocaleTimeString('en-US', { 
+          hour: '2-digit', 
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false,
+          timeZone: 'UTC'
+        }),
+        date: date.toLocaleDateString('en-US', { 
+          weekday: 'short',
+          month: 'short', 
+          day: 'numeric',
+          timeZone: 'UTC'
+        }),
+        fullDate: timeString
+      };
+    } catch (error) {
+      return {
+        time: '07:54:15',
+        date: 'Wed, Jun 12',
+        fullDate: '2025-06-12 07:54:15'
+      };
+    }
   };
 
-  // Only format time if we have currentTime and are on client
-  const timeData = currentTime && isClient ? formatTime(currentTime) : {
-    time: '09:33:31',
-    date: 'Wed, Jun 11',
-    fullDate: '2025-06-11 09:33:31'
-  };
+  const timeData = formatTime(displayTime);
 
   const groupedNavigation = navigation.reduce((acc, item) => {
     if (!acc[item.category]) acc[item.category] = [];
@@ -182,7 +188,6 @@ export function Sidebar({ className }: SidebarProps) {
     return acc;
   }, {} as Record<string, NavigationItem[]>);
 
-  // Mobile Toggle Button
   const MobileToggle = () => (
     <Button
       variant="ghost"
@@ -198,18 +203,15 @@ export function Sidebar({ className }: SidebarProps) {
     </Button>
   );
 
-  // Sidebar Content
   const SidebarContent = () => (
     <div className={cn(
       "h-full bg-gradient-to-b from-sky-500/20 via-sky-600/15 to-sky-700/20 backdrop-blur-xl border-r border-sky-300/20",
       "flex flex-col relative overflow-hidden"
     )}>
-      {/* Sky pattern overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(56,189,248,0.1),transparent_40%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(14,165,233,0.1),transparent_40%)] pointer-events-none" />
       
       <div className="relative z-10 h-full p-4 flex flex-col">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           {(!isCollapsed || isMobile) && (
             <div className="flex items-center gap-3">
@@ -221,13 +223,12 @@ export function Sidebar({ className }: SidebarProps) {
                 )}
               </div>
               <div>
-                <h1 className="text-white font-bold text-lg">WeatherWebApp</h1>
-                <p className="text-sky-100/80 text-xs">by Aashik Mahato</p>
+                <h1 className="text-white font-bold text-lg">WeatherApp</h1>
+                <p className="text-sky-100/80 text-xs">by Aashik9567</p>
               </div>
             </div>
           )}
           
-          {/* Desktop Collapse Button */}
           {!isMobile && (
             <Button
               variant="ghost"
@@ -244,7 +245,6 @@ export function Sidebar({ className }: SidebarProps) {
           )}
         </div>
 
-        {/* Time Display */}
         {(!isCollapsed || isMobile) && (
           <div className="mb-6 p-3 bg-sky-500/10 rounded-xl border border-sky-300/20 backdrop-blur-sm">
             <div className="flex items-center gap-2 mb-1">
@@ -252,18 +252,17 @@ export function Sidebar({ className }: SidebarProps) {
               <span className="text-sky-100/90 text-sm font-medium">Current Time (UTC)</span>
             </div>
             <div className="text-white text-lg font-bold font-mono">
-              {isClient ? timeData.time : ''}
+              {timeData.time}
             </div>
             <div className="text-sky-100/70 text-xs">
-              {isClient ? timeData.date : ''} • 2025
+              {timeData.date} • 2025
             </div>
             <div className="text-sky-200/50 text-xs mt-1 font-mono" title="Full UTC timestamp">
-              {isClient ? timeData.fullDate : ''}
+              User: Aashik9567 | {timeData.fullDate}
             </div>
           </div>
         )}
 
-        {/* User Badge for Collapsed */}
         {isCollapsed && !isMobile && (
           <div className="mb-6 flex flex-col items-center space-y-4">
             <div className="w-12 h-12 bg-sky-500/20 rounded-xl flex items-center justify-center border border-sky-300/20">
@@ -275,7 +274,6 @@ export function Sidebar({ className }: SidebarProps) {
           </div>
         )}
 
-        {/* Navigation */}
         <nav className="flex-1 space-y-2 overflow-y-auto">
           {Object.entries(groupedNavigation).map(([category, items]) => (
             <div key={category}>
@@ -365,7 +363,6 @@ export function Sidebar({ className }: SidebarProps) {
           ))}
         </nav>
 
-        {/* User Profile Section */}
         <div className="mt-6 pt-4 border-t border-sky-300/20">
           {(!isCollapsed || isMobile) ? (
             <div className="space-y-3">
@@ -375,7 +372,7 @@ export function Sidebar({ className }: SidebarProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-white text-sm font-medium truncate">
-                    Aashik Mahato
+                    Aashik9567
                   </div>
                   <div className="text-sky-100/70 text-xs truncate">
                     Premium User • Online
@@ -414,6 +411,11 @@ export function Sidebar({ className }: SidebarProps) {
           )}
         </div>
 
+        {(!isCollapsed || isMobile) && (
+          <div className="mt-4 text-center text-sky-200/40 text-xs">
+            v{process.env.NEXT_PUBLIC_APP_VERSION || '1.0.0'} • 2025 • Aashik9567
+          </div>
+        )}
       </div>
     </div>
   );
