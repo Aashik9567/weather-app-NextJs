@@ -79,13 +79,6 @@ const navigation: NavigationItem[] = [
     category: 'features' 
   },
   { 
-    name: 'Search', 
-    href: '/search', 
-    icon: Search, 
-    description: 'Advanced location search',
-    category: 'features' 
-  },
-  { 
     name: 'Settings', 
     href: '/settings', 
     icon: Settings, 
