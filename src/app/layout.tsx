@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Sidebar } from '@/components/layout/Sidebar';
+import { NotificationProvider } from '@/components/notifications/NotificationContext';
+import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,6 +32,8 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
+        <NotificationProvider>
+        <NotificationCenter />
         <div className="min-h-screen sky-gradient-bg">
           <div className="fixed inset-0 bg-gradient-to-br from-sky-400/10 via-sky-500/10 to-sky-600/10" />
           <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.05),transparent_50%)]" />
@@ -53,6 +57,7 @@ export default function RootLayout({
 
           {modal}
         </div>
+        </NotificationProvider>
       </body>
     </html>
   );
