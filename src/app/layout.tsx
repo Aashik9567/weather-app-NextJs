@@ -8,15 +8,73 @@ import { NotificationCenter } from '@/components/notifications/NotificationCente
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'WeatherApp - Live Weather Dashboard | Aashik9567',
-  description: 'Real-time weather data with AI insights by Aashik9567',
-  keywords: ['weather', 'forecast', 'AI', 'dashboard', 'real-time', 'Aashik9567'],
+  title: 'WeatherApp - AI Weather Dashboard | Aashik9567',
+  description: 'Modern weather application with AI insights and real-time forecasting. Built by Aashik9567 on 2025-06-18 06:31:50 UTC',
+  keywords: ['weather', 'forecast', 'AI', 'dashboard', 'Aashik9567', 'NextJS', 'React', 'Vercel'],
   authors: [{ name: 'Aashik9567', url: 'https://github.com/Aashik9567' }],
+  creator: 'Aashik9567',
+  publisher: 'Aashik9567',
+  metadataBase: new URL(process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://weatherapp-aashik9567.vercel.app',
+    title: 'WeatherApp - AI Weather Dashboard',
+    description: 'Modern weather application with AI insights by Aashik9567',
+    siteName: 'WeatherApp by Aashik9567',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'WeatherApp by Aashik9567 - AI Weather Dashboard',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@Aashik9567',
+    creator: '@Aashik9567',
+    title: 'WeatherApp by Aashik9567',
+    description: 'AI-Enhanced Weather Dashboard with real-time forecasting',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  // FIXED: Proper favicon configuration without conflicts
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+    other: [
+      { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  },
+  manifest: '/site.webmanifest',
+  themeColor: '#0ea5e9',
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#0ea5e9',
 };
 
 interface RootLayoutProps {
@@ -30,15 +88,24 @@ export default function RootLayout({
 }: RootLayoutProps) {
   return (
     <html lang="en" className="dark">
+      <head>
+        {/* Additional favicon links for better compatibility */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <meta name="build-time" content="2025-06-18T06:31:50Z" />
+        <meta name="author" content="Aashik9567" />
+      </head>
       <body className={inter.className}>
         <NotificationProvider>
           <NotificationCenter />
           <div className="min-h-screen sky-gradient-bg">
+            {/* Background effects */}
             <div className="fixed inset-0 bg-gradient-to-br from-sky-400/10 via-sky-500/10 to-sky-600/10" />
             <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(14,165,233,0.05),transparent_50%)]" />
             <div className="fixed inset-0 bg-[radial-gradient(circle_at_20%_80%,rgba(56,189,248,0.08),transparent_50%)]" />
             <div className="fixed inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(2,132,199,0.08),transparent_50%)]" />
             
+            {/* Floating particles */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
               <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-sky-300/20 rounded-full animate-float" style={{ animationDelay: '0s' }} />
               <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-sky-400/30 rounded-full animate-float" style={{ animationDelay: '2s' }} />

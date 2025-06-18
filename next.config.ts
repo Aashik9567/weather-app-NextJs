@@ -1,16 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove deprecated options
-  // experimental.appDir is now default in Next.js 14
-  // swcMinify is now default and deprecated
-  
   // Production optimizations
   compress: true,
   poweredByHeader: false,
   
   // Environment variables for client
   env: {
-    CUSTOM_BUILD_TIME: '2025-06-17T05:43:13Z',
+    CUSTOM_BUILD_TIME: '2025-06-18T06:31:50Z',
     CUSTOM_AUTHOR: 'Aashik9567',
   },
   
@@ -45,7 +41,7 @@ const nextConfig = {
           },
           {
             key: 'X-Build-Time',
-            value: '2025-06-17T05:43:13Z',
+            value: '2025-06-18T06:31:50Z',
           },
           {
             key: 'X-Content-Type-Options',
@@ -83,15 +79,6 @@ const nextConfig = {
           },
         ],
       },
-      {
-        source: '/favicon.ico',
-        headers: [
-          {
-            key: 'Cache-Control',
-            value: 'public, max-age=86400',
-          },
-        ],
-      },
     ];
   },
   
@@ -106,15 +93,15 @@ const nextConfig = {
     ];
   },
 
-  // Favicon routing fix
-  async rewrites() {
-    return [
-      {
-        source: '/favicon.ico',
-        destination: '/weather-favicon.ico',
-      },
-    ];
-  },
+  // REMOVED: Conflicting favicon rewrites that cause the error
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: '/favicon.ico',
+  //       destination: '/weather-favicon.ico',
+  //     },
+  //   ];
+  // },
 
   // Output configuration for Vercel
   output: 'standalone',

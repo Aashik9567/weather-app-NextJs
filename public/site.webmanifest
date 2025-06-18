@@ -1,0 +1,36 @@
+{
+  "name": "WeatherApp by Aashik9567",
+  "short_name": "WeatherApp",
+  "description": "AI-Enhanced Weather Dashboard with real-time forecasting",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0ea5e9",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["weather", "utility", "lifestyle"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "author": "Aashik9567",
+  "version": "1.0.0",
+  "generated": "2025-06-18T06:36:16Z",
+  "last_updated": "2025-06-18 06:36:16"
+}
