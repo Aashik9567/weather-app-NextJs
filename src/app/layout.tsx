@@ -50,23 +50,7 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
-  // FIXED: Proper favicon configuration without conflicts
-  icons: {
-    icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/icon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/icon-32x32.png', sizes: '32x32', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
-    other: [
-      { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
-    ],
-  },
-  manifest: '/site.webmanifest',
-  themeColor: '#0ea5e9',
+  // REMOVED: All favicon and manifest references to prevent 404 errors
 };
 
 export const viewport: Viewport = {
@@ -89,9 +73,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        {/* Additional favicon links for better compatibility */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        {/* Removed favicon links to prevent 404 errors */}
         <meta name="build-time" content="2025-06-18T06:31:50Z" />
         <meta name="author" content="Aashik9567" />
       </head>
